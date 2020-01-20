@@ -1,11 +1,21 @@
 #!/bin/env python3
 
 import random
+import operator
+from functools import reduce
+
+max_length = 3
+max_depth = 3
+depth_chance = 0.5
 
 operators = '+-*/^'
-max_length = 4
-max_depth = 5
-depth_chance = 0.5
+lambdas = (
+        sum,
+        lambda l: reduce(operator.sub, l),
+        lambda l: reduce(operator.mul, l),
+        lambda l: reduce(operator.truediv, l),
+        lambda l: reduce(operator.pow, l),
+        )
 
 class Expression:
     def __init__(self, depth=0):
@@ -19,22 +29,26 @@ class Expression:
                 self.ops.append(Value())
         
     def prefix(self):
-        return f'({self.operator} ' +' '.join(map(lambda op: op.prefix(), self.ops)) + ')'
+        return f'({self.operator} ' +' '.join(map(lambda exp: exp.prefix(), self.ops)) + ')'
 
     def postfix(self):
-        return '(' + ' '.join(map(lambda op: op.postfix(), self.ops)) + ' ' + self.operator + ')'
+        return '(' + ' '.join(map(lambda exp: exp.postfix(), self.ops)) + ' ' + self.operator + ')'
 
     def infix(self):
-        return '(' + f' {self.operator} '.join(map(lambda op: op.infix(), self.ops)) + ')'
+        return '(' + f' {self.operator} '.join(map(lambda exp: exp.infix(), self.ops)) + ')'
+
+    def eval(self):
+        return lambdas[operators.find(self.operator)](map(lambda exp: exp.eval(), self.ops))
 
 class Value(Expression):
     def __init__(self):
-        self.value = random.randrange(100)
+        self.value = random.randrange(1, 10)
     def prefix(self):
         return str(self.value)
     postfix = prefix
     infix = prefix
-
+    def eval(self):
+        return self.value
 
 def generate_problem():
     problem_types = ('convert', 'evaluate')
@@ -57,7 +71,7 @@ def generate_problem():
         return (question, answer)
     if ptype == 'evaluate':
         question = f'Evaluate the {repr_names[from_type]} expression {reprs[from_type]()}.'
-        answer = eval(e.infix())
+        answer = str(e.eval())
         return (question, answer)
 
 question, answer = generate_problem()
