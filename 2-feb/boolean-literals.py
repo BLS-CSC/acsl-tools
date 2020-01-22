@@ -47,7 +47,12 @@ class Expression:
         else:
             return '(' + self.operator.join(map(str, self.ops)) + ')'
 
-e = Expression()
+def generate_problem():
+    e = Expression()
+    print('Solve the expression')
+    print(str(e))
+    print('Press ENTER to see the solution')
+    input()
+    print(bool(e))
 
-print(str(e))
-print(bool(e))
+generate_problem()
