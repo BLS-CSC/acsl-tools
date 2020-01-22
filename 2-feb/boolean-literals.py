@@ -25,9 +25,9 @@ class Expression:
         self.operator = random.choice(operators)
         self.ops = []
 
-        if operator == '~':
+        if operator == operators[2]:
             # One operand
-            add_operand(depth)
+            self.add_operand(depth)
         else:
             for i in range(random.randrange(2, max_length)):
                 self.add_operand(depth)
