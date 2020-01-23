@@ -1,8 +1,6 @@
 #!/bin/env python3
 
 import random
-import operator
-from functools import reduce
 
 string_length = 4
 max_depth = 3
