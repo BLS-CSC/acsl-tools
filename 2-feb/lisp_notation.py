@@ -4,6 +4,7 @@ import random
 import operator
 from functools import reduce
 
+max_length = 3
 max_depth = 3
 depth_chance = 0.5
 
@@ -21,17 +22,17 @@ class Expression:
         self.operator = random.choice(operators)
         self.ops = []
 
-        for i in range(2):
+        for i in range(random.randrange(2, max_length)):
             if (depth < max_depth and random.random() < depth_chance ** depth):
                 self.ops.append(Expression(depth + 1))
             else:
                 self.ops.append(Value())
         
     def prefix(self):
-        return f'{self.operator} ' +' '.join(map(lambda exp: exp.prefix(), self.ops))
+        return f'({self.operator} ' +' '.join(map(lambda exp: exp.prefix(), self.ops)) + ')'
 
     def postfix(self):
-        return ' '.join(map(lambda exp: exp.postfix(), self.ops)) + ' ' + self.operator
+        return '(' + ' '.join(map(lambda exp: exp.postfix(), self.ops)) + ' ' + self.operator + ')'
 
     def infix(self):
         return '(' + f' {self.operator} '.join(map(lambda exp: exp.infix(), self.ops)) + ')'
